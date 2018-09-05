@@ -1,8 +1,8 @@
 package main.io;
 
 public class BitMap {
-	public byte[] bitArr;// bit数组
-	private static final byte mask = 3;// 移位数
+	public byte[] bitArr;// bit脢媒脳茅
+	private static final byte mask = 3;// 脪脝脦禄脢媒
 	private static final int maxNum = (1 << mask) - 1;
 	private long count = 0;
 
@@ -20,7 +20,6 @@ public class BitMap {
 		} else if (val >= 0 && bit != maxNum) {
 			bitArr[num >> mask] |= (1 << bit);
 		}
-		// bitArr[num >> mask] |= (1 << (num & maxNum));
 	}
 
 	public byte getBit(int num) {
