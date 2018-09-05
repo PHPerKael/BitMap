@@ -1,23 +1,14 @@
 package main.io;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.Vector;
 import java.util.HashMap;
-import java.util.Scanner;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import main.io.BitMap;
-
-// cd workspace\code\java\MultiThreadReadBigData\src
-// javac -d bin -cp . main\io\ThreadsReadFile.java
-// java -classpath d:\workspace\code\java\MultiThreadReadBigData\bin main.io.ThreadsReadFile
 
 public class ThreadsReadFile {
 	private BitMap bm = new BitMap();
@@ -35,14 +26,14 @@ public class ThreadsReadFile {
 
 	public static void main(String[] args) {
 		try {
-			// 1、分割线程所需读的文件区域
+			// 1銆乻eperate thread's reading line range
 			var reader = new ThreadsReadFile(
 					"D:\\workspace\\code\\php\\test\\smalldata.txt",
 					1024 * 1024 * 10, "UTF-8");
 			reader.fileLenghtSplit((byte) 0, 0);
 			System.out.println(reader.threadReadRange.toString());
 
-			// 2、读取文件并写进bitmap
+			// 2銆乺ead file and set bit
 			var start = System.currentTimeMillis();
 			System.out.println("start to set bitmap at" + start);
 
@@ -115,27 +106,6 @@ public class ThreadsReadFile {
 		}
 	}
 
-	private void writeBitMap() {
-		try {
-			var file = new File(
-					"D:\\workspace\\code\\php\\test\\bitmapdata.txt");
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-
-			var out = new FileOutputStream(file, false);
-			var buffOut = new BufferedOutputStream(out, 1024 * 4);
-
-			var length = bm.bitArr.length;
-			for (int i = 0; i < length; ++i) {
-				buffOut.write(bm.bitArr[i]);
-			}
-			buffOut.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	private class ThreadReader implements Runnable {
 		private byte index;
 		private String name;
@@ -157,28 +127,6 @@ public class ThreadsReadFile {
 		@Override
 		public void run() {
 			try {
-				// 1、Scanner
-				/*
-				 * var console = new Scanner(new File(fileToRead));
-				 * while(console.hasNextLine()) {
-				 * bm.setBit(Integer.parseInt(console.nextLine().trim())); }
-				 * console.close();
-				 */
-
-				// 2、RandomAccessFile
-				/*
-				 * var raf = new RandomAccessFile(fileToRead, "r");
-				 * 
-				 * raf.seek(threadReadRange.get(this.index).get("start")); var
-				 * tmp = raf.readLine(); while (tmp != null &&
-				 * raf.getFilePointer() <= threadReadRange
-				 * .get(this.index).get("end")) {
-				 * bm.setBit(Integer.parseInt(tmp.trim())); tmp =
-				 * raf.readLine(); } raf.close();
-				 */
-
-				// 3、BufferedFileInputStream + MappedByteBuffer
-
 				var length = threadReadRange.get(this.index).get("end")
 						- threadReadRange.get(this.index).get("start") + 1;
 				var reader = new MappedByteBufferReader(fileToRead,
