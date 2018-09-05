@@ -15,9 +15,7 @@ public class MappedByteBufferReader {
 			throws IOException {
 		this.fins = new FileInputStream(filename);
 		this.chl = fins.getChannel();
-		this.size = size;
 		this.buffer = chl.map(FileChannel.MapMode.READ_ONLY, start, size);
-		// this.buffer.limit(4 * 1024 * 1024);
 	}
 
 	public String readLine() {
